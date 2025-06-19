@@ -1,0 +1,30 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 允許讀取和寫入芊的文章
+    match /qian_articles/{document} {
+      allow read, write: if true;
+    }
+    
+    // 允許讀取和寫入璟的文章
+    match /jing_articles/{document} {
+      allow read, write: if true;
+    }
+    
+    // 允許讀取和寫入芊的收藏
+    match /qian_favorites/{document} {
+      allow read, write: if true;
+    }
+    
+    // 允許讀取和寫入璟的收藏
+    match /jing_favorites/{document} {
+      allow read, write: if true;
+    }
+    
+    // 暫時保留通用規則，直到 2025年7月19日
+    match /{document=**} {
+      allow read, write: if request.time < timestamp.date(2025, 7, 19);
+    }
+  }
+}

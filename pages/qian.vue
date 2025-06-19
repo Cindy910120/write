@@ -6,10 +6,6 @@
     <div class="max-w-5xl mx-auto p-6">
       <!-- 歡迎區域 -->
       <div class="text-center mb-12 pt-8">
-        <div class="w-24 h-24 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl border-4 border-emerald-200">
-          <span class="text-white font-bold text-3xl">芊</span>
-        </div>
-        <h1 class="text-4xl font-bold text-emerald-50 mb-4">歡迎來到芊的個人空間</h1>
         <p class="text-xl text-emerald-200 leading-relaxed max-w-2xl mx-auto">
           你可以透過上方按鍵進入觀賞區與寫作區。<br>
           在這裡，享受文字創作的美好時光。
@@ -17,68 +13,64 @@
       </div>      <!-- 兩個主要卡片區塊 -->
       <div class="grid lg:grid-cols-2 gap-8">
         
-        <!-- 卡片1：推薦璟的最新文章 -->
-        <fieldset class="relative border-2 border-emerald-300 rounded-2xl bg-white/95 backdrop-blur-sm shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-1">
-          <legend class="mx-6 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-lg text-lg">
-            璟的最新創作
-          </legend>
-          
-          <!-- 卡片內容區域 -->
-          <div class="p-8 pb-16 relative min-h-[400px]">
-            <div v-if="latestJingArticle">
-              <!-- 文章內容 -->
-              <div class="mb-6">
-                <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-emerald-200 pb-2">
-                  {{ latestJingArticle.title }}
-                </h3>
-                <div class="bg-emerald-50 rounded-lg p-4 border-l-4 border-emerald-400 mb-4">
-                  <p class="text-gray-700 leading-relaxed line-clamp-4">{{ getPreview(latestJingArticle.content) }}</p>
-                </div>
-                <div class="flex items-center text-sm text-emerald-600 mb-4">
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                  <span>發布於 {{ formatDate(latestJingArticle.publishedAt) }}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div v-else class="text-center py-8">
-              <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                </svg>
-              </div>
-              <h3 class="text-lg font-semibold text-gray-600 mb-2">等待璟的創作</h3>
-              <p class="text-gray-500 text-sm">璟還沒有發布文章，期待她的第一篇精彩創作！</p>
-            </div>
+        <!-- 卡片1：推薦璟的最新文章 - UCard 樣式 -->
+        <div class="bg-white border border-gray-200 shadow-lg rounded-lg hover:shadow-xl transition-all duration-300">          <!-- Header -->
+          <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-emerald-600 to-teal-600">
+            <h2 class="text-xl font-bold text-white">
+              璟的最新創作
+            </h2>
+          </div>
 
-            <!-- Read More 按鈕 - 固定在右下角 -->
-            <div class="absolute bottom-6 right-6">
-              <NuxtLink
-                to="/qian/read"
-                class="group bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-5 py-2.5 rounded-lg hover:from-emerald-700 hover:to-teal-700 transition duration-300 font-medium shadow-lg text-sm flex items-center space-x-2"
-              >
-                <span>Read More</span>
-                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          <!-- Main Content -->
+          <div class="p-6 min-h-[320px] flex flex-col">
+            <div v-if="latestJingArticle" class="flex-1">
+              <h3 class="text-xl font-bold text-gray-800 mb-3">
+                {{ latestJingArticle.title }}
+              </h3>
+              <div class="bg-emerald-50 rounded-lg p-4 border-l-4 border-emerald-400 mb-4">
+                <p class="text-gray-700 leading-relaxed line-clamp-4">{{ getPreview(latestJingArticle.content) }}</p>
+              </div>
+              <div class="flex items-center text-sm text-emerald-600">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-              </NuxtLink>
+                <span>發布於 {{ formatDate(latestJingArticle.publishedAt) }}</span>
+              </div>
+            </div>
+              <div v-else class="flex-1 flex items-center justify-center">
+              <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-600 mb-2">等待璟的創作</h3>
+                <p class="text-gray-500 text-sm">璟還沒有發布文章，期待她的第一篇精彩創作！</p>
+              </div>
             </div>
           </div>
-        </fieldset>
 
-        <!-- 卡片2：我的收藏文章 -->
-        <fieldset class="relative border-2 border-pink-300 rounded-2xl bg-white/95 backdrop-blur-sm shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-1">
-          <legend class="mx-6 px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-lg text-lg">
-            我的收藏
-          </legend>
-          
-          <!-- 卡片內容區域 -->
-          <div class="p-8 pb-16 relative min-h-[400px]">
-            <div v-if="favoriteArticles.length > 0">
-              <!-- 收藏列表 -->
-              <div class="space-y-4 max-h-72 overflow-y-auto custom-scrollbar">
+          <!-- Footer -->
+          <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end">
+            <NuxtLink
+              to="/qian/read"
+              class="group bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-5 py-2.5 rounded-lg hover:from-emerald-700 hover:to-teal-700 transition duration-300 font-medium shadow-lg text-sm flex items-center space-x-2"
+            >
+              <span>Read More</span>
+              <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </NuxtLink>
+          </div>
+        </div>
+
+        <!-- 卡片2：我的收藏文章 - UCard 樣式 -->
+        <div class="bg-white border border-gray-200 shadow-lg rounded-lg hover:shadow-xl transition-all duration-300">          <!-- Header -->
+          <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-pink-500 to-rose-500">
+            <h2 class="text-xl font-bold text-white">
+              我的收藏
+            </h2>
+          </div>
+
+          <!-- Main Content -->
+          <div class="p-6 min-h-[320px] flex flex-col">
+            <div v-if="favoriteArticles.length > 0" class="flex-1">
+              <div class="space-y-4 max-h-64 overflow-y-auto custom-scrollbar">
                 <div 
                   v-for="article in favoriteArticles.slice(0, 3)" 
                   :key="article.id"
@@ -115,31 +107,27 @@
                 </div>
               </div>
             </div>
-            
-            <div v-else class="text-center py-8">
-              <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                </svg>
+              <div v-else class="flex-1 flex items-center justify-center">
+              <div class="text-center">
+                <h3 class="text-lg font-semibold text-gray-600 mb-2">還沒有收藏</h3>
+                <p class="text-gray-500 text-sm">去觀賞區發現精彩內容吧！</p>
               </div>
-              <h3 class="text-lg font-semibold text-gray-600 mb-2">還沒有收藏</h3>
-              <p class="text-gray-500 text-sm">去觀賞區發現精彩內容吧！</p>
-            </div>
-
-            <!-- Learn More 按鈕 - 固定在右下角 -->
-            <div class="absolute bottom-6 right-6">
-              <NuxtLink
-                to="/qian/read"
-                class="group bg-gradient-to-r from-pink-500 to-rose-500 text-white px-5 py-2.5 rounded-lg hover:from-pink-600 hover:to-rose-600 transition duration-300 font-medium shadow-lg text-sm flex items-center space-x-2"
-              >
-                <span>Learn More</span>
-                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-              </NuxtLink>
             </div>
           </div>
-        </fieldset>
+
+          <!-- Footer -->
+          <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end">
+            <NuxtLink
+              to="/qian/read"
+              class="group bg-gradient-to-r from-pink-500 to-rose-500 text-white px-5 py-2.5 rounded-lg hover:from-pink-600 hover:to-rose-600 transition duration-300 font-medium shadow-lg text-sm flex items-center space-x-2"
+            >
+              <span>Learn More</span>
+              <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </NuxtLink>
+          </div>
+        </div>
 
       </div>
     </div>

@@ -6,11 +6,22 @@ export default defineNuxtConfig({
     preset: 'static'
   },
   ssr: false,
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/reset.css', '~/assets/css/theme.css', '~/assets/css/utilities.css'],
   postcss: {
     plugins: {
       '@tailwindcss/postcss': {},
       autoprefixer: {},
     },
   },
+  app: {
+    pageTransition: { 
+      name: 'page', 
+      mode: 'out-in' 
+    },
+    head: {
+      htmlAttrs: {
+        lang: 'zh-TW'
+      }
+    }
+  }
 })

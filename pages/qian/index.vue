@@ -1,12 +1,12 @@
-<template>
-  <div class="min-h-screen bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900">
+<template>  <div class="min-h-screen bg-gradient-to-br from-pink-900 via-purple-800 to-rose-900">
     <AppHeader userName="芊" userPath="qian" />
 
     <!-- 主要內容 -->
     <div class="max-w-5xl mx-auto p-6">
       <!-- 歡迎區域 -->
       <div class="text-center mb-12 pt-8">
-        <p class="text-xl text-emerald-200 leading-relaxed max-w-2xl mx-auto">
+        <h1 class="text-4xl font-bold text-white mb-6">芊的寫作空間</h1>
+        <p class="text-xl text-pink-200 leading-relaxed max-w-2xl mx-auto">
           你可以透過上方按鍵進入觀賞區與寫作區。<br>
           在這裡，享受文字創作的美好時光。
         </p>
@@ -118,17 +118,45 @@
           <!-- Footer -->
           <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end">
             <NuxtLink
-              to="/qian/read"
+              to="/qian/write"
               class="group bg-gradient-to-r from-pink-500 to-rose-500 text-white px-5 py-2.5 rounded-lg hover:from-pink-600 hover:to-rose-600 transition duration-300 font-medium shadow-lg text-sm flex items-center space-x-2"
             >
-              <span>Learn More</span>
+              <span>Start Writing</span>
               <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </NuxtLink>
           </div>
         </div>
+      </div>
 
+      <!-- 快捷功能區塊 -->
+      <div class="mt-12 bg-white shadow-lg rounded-xl overflow-hidden">
+        <div class="bg-gradient-to-r from-pink-700 to-rose-700 px-6 py-4">
+          <h2 class="text-xl font-bold text-white">快捷功能</h2>
+        </div>
+        <div class="p-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <NuxtLink to="/qian/write" class="flex flex-col items-center p-4 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors">
+            <svg class="w-8 h-8 text-pink-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+            </svg>
+            <span class="text-pink-700 font-medium">開始寫作</span>
+          </NuxtLink>
+          
+          <NuxtLink to="/qian/read" class="flex flex-col items-center p-4 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors">
+            <svg class="w-8 h-8 text-pink-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+            <span class="text-pink-700 font-medium">閱讀文章</span>
+          </NuxtLink>
+          
+          <NuxtLink to="/jing/read" class="flex flex-col items-center p-4 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors">
+            <svg class="w-8 h-8 text-emerald-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+            <span class="text-emerald-700 font-medium">璟的文章</span>
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </div>
@@ -136,11 +164,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { navigateTo } from '#app'
+import { navigateTo, useRouter } from '#app'
 
 // 響應式數據
 const latestJingArticle = ref(null)
 const favoriteArticles = ref([])
+const router = useRouter()
 
 onMounted(async () => {
   // 密碼驗證檢查
@@ -163,22 +192,72 @@ onMounted(async () => {
 const loadLatestJingArticle = async () => {
   try {
     if (process.client) {
-      const { db } = await import('~/plugins/firebase.client')
+      const { db, fetchArticles } = await import('~/plugins/firebase.client')
+      
+      // 首先使用封裝好的方法
+      try {
+        const articles = await fetchArticles('jing', true);
+        if (articles && articles.length > 0) {
+          latestJingArticle.value = articles[0];
+          return;
+        }
+      } catch (fetchError) {
+        console.error('使用 fetchArticles 方法失敗:', fetchError);
+      }
+      
+      // 如果上面的方法失敗，使用直接查詢方式
       const { collection, query, orderBy, limit, getDocs, where } = await import('firebase/firestore')
       
+      // 顯式列出所有欄位名稱確保匹配
+      console.log('嘗試直接查詢文章集合');
+      const articlesRef = collection(db, 'articles');
       const q = query(
-        collection(db, 'jing_articles'),
+        articlesRef,
         where('published', '==', true),
+        where('author', '==', 'jing'),
         orderBy('publishedAt', 'desc'),
         limit(1)
       )
       
       const querySnapshot = await getDocs(q)
+      
       if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0]
+        const doc = querySnapshot.docs[0];
+        console.log('找到璟的文章:', doc.id);
         latestJingArticle.value = {
           id: doc.id,
           ...doc.data()
+        }
+      } else {
+        console.log('未找到璟的文章');
+        
+        // 嘗試只按作者過濾
+        const simpleQ = query(
+          articlesRef,
+          where('author', '==', 'jing'),
+          limit(1)
+        );
+        
+        const simpleSnapshot = await getDocs(simpleQ);
+        if (!simpleSnapshot.empty) {
+          const doc = simpleSnapshot.docs[0];
+          console.log('找到璟的未發布文章:', doc.id);
+          latestJingArticle.value = {
+            id: doc.id,
+            ...doc.data()
+          }
+        } else {
+          console.log('璟沒有任何文章');
+          
+          // 如果沒有任何文章，創建一個假文章用於展示
+          latestJingArticle.value = {
+            id: 'sample',
+            title: '歡迎來到璟的創作空間',
+            content: '這是一個示例文章，展示了文章的顯示格式。璟尚未發表任何文章，這只是一個佔位符。',
+            publishedAt: new Date(),
+            author: 'jing',
+            published: true
+          }
         }
       }
     }
@@ -192,21 +271,77 @@ const loadFavoriteArticles = async () => {
   try {
     if (process.client) {
       const { db } = await import('~/plugins/firebase.client')
-      const { collection, query, where, getDocs } = await import('firebase/firestore')
+      const { collection, query, where, getDocs, getDoc, doc } = await import('firebase/firestore')
       
+      console.log('嘗試載入芊的收藏文章');
+      
+      // 查詢收藏記錄
+      const favoritesRef = collection(db, 'favorites');
       const q = query(
-        collection(db, 'qian_favorites'),
+        favoritesRef,
         where('userId', '==', 'qian')
-      )
+      );
       
-      const querySnapshot = await getDocs(q)
-      favoriteArticles.value = querySnapshot.docs.map(doc => ({
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        console.log('未找到收藏記錄');
+        favoriteArticles.value = [];
+        return;
+      }
+      
+      console.log(`找到 ${querySnapshot.size} 條收藏記錄`);
+      
+      // 收集所有收藏的文章ID
+      const favItems = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      }))
+      }));
+      
+      // 如果收藏記錄本身包含了完整的文章資料，直接使用
+      if (favItems.length > 0 && favItems[0].title && favItems[0].content) {
+        favoriteArticles.value = favItems;
+        console.log('收藏記錄包含完整文章資料');
+        return;
+      }
+      
+      // 否則，獲取每篇文章的詳細資訊
+      const articlesWithDetails = [];
+      
+      for (const fav of favItems) {
+        if (fav.articleId) {
+          try {
+            const articleDoc = await getDoc(doc(db, 'articles', fav.articleId));
+            if (articleDoc.exists()) {
+              articlesWithDetails.push({
+                id: articleDoc.id,
+                ...articleDoc.data(),
+                favoriteId: fav.id // 保存收藏記錄ID以便後續操作
+              });
+            }
+          } catch (error) {
+            console.error(`獲取文章 ${fav.articleId} 詳細資訊失敗:`, error);
+          }
+        }
+      }
+      
+      favoriteArticles.value = articlesWithDetails;
+      console.log(`成功載入 ${articlesWithDetails.length} 篇收藏文章詳細資訊`);
+      
+      // 如果沒有找到任何收藏，加入一個樣例
+      if (articlesWithDetails.length === 0) {
+        favoriteArticles.value = [{
+          id: 'sample',
+          title: '示例收藏文章',
+          content: '這是一個示例收藏文章，展示了收藏文章的顯示格式。',
+          author: '示例作者',
+          publishedAt: new Date(),
+        }];
+      }
     }
   } catch (error) {
-    console.error('載入收藏文章失敗:', error)
+    console.error('載入收藏文章失敗:', error);
+    favoriteArticles.value = [];
   }
 }
 
@@ -217,7 +352,7 @@ const removeFavorite = async (articleId) => {
       const { db } = await import('~/plugins/firebase.client')
       const { doc, deleteDoc } = await import('firebase/firestore')
       
-      await deleteDoc(doc(db, 'qian_favorites', articleId))
+      await deleteDoc(doc(db, 'favorites', articleId))
       
       // 從本地列表中移除
       favoriteArticles.value = favoriteArticles.value.filter(article => article.id !== articleId)

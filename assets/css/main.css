@@ -1,3 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Main CSS file that imports all other CSS files */
+/* These imports will be processed by the bundler */
+@import './reset.css';
+@import './theme.css';
+@import './global.css';
+
+/* Note: Tailwind is configured via postcss in nuxt.config.ts */

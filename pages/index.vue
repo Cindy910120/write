@@ -173,9 +173,9 @@ const logout = () => {
 // 用戶登入
 const loginAs = (user) => {
   if (user === 'qian') {
-    navigateTo('/qian')
+    navigateTo('/qian', { replace: true });
   } else if (user === 'jing') {
-    navigateTo('/jing')
+    navigateTo('/jing', { replace: true });
   }
 }
 

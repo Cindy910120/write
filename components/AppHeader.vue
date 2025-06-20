@@ -1,22 +1,23 @@
 <template>
-  <nav class="sticky top-0 z-50" style="background-color: rgba(47, 79, 79, 0.7);">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="flex justify-between items-center h-20" style="position: relative; z-index: 60;">
+  <nav class="app-header" :class="userTypeClass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-20 relative z-50">
         <!-- Logo 和用戶資訊 -->
         <div class="flex items-center space-x-4">
-          <div class="w-12 h-12 bg-gradient-to-br from-slate-600 to-slate-700 rounded-full flex items-center justify-center shadow-lg">
+          <div class="user-avatar">
+            <span class="avatar-text">{{ userInitial }}</span>
           </div>
           <div>
-            <h1 class="text-xl font-bold" style="color: white !important;">{{ userName }}的寫作天地</h1>
-            <p class="text-sm" style="color: white !important;">WriteApp - 創作無限</p>
+            <h1 class="text-xl font-bold text-white">{{ userName }}的寫作天地</h1>
+            <p class="text-sm text-white opacity-80">WriteApp - 創作無限</p>
           </div>
-        </div>        <!-- 導航按鈕區域 -->
-        <div class="flex items-center bg-slate-900/40 backdrop-blur-sm rounded-2xl p-2 space-x-1">
-          
+        </div>
+        
+        <!-- 導航按鈕區域 -->
+        <div class="nav-buttons-container">
           <!-- 首頁按鈕 -->
           <button
             @click="navigateToHome"
-            @mousedown="debugClick('首頁')"
             :class="{ 'nav-btn-active': isCurrentRoute(`/${userPath}`) }"
             class="nav-btn"
           >
@@ -29,7 +30,6 @@
           <!-- 寫作空間按鈕 -->
           <button
             @click="navigateToWrite"
-            @mousedown="debugClick('寫作空間')"
             :class="{ 'nav-btn-active': isCurrentRoute(`/${userPath}/write`) }"
             class="nav-btn"
           >
@@ -42,7 +42,6 @@
           <!-- 觀賞空間按鈕 -->
           <button
             @click="navigateToRead"
-            @mousedown="debugClick('觀賞空間')"
             :class="{ 'nav-btn-active': isCurrentRoute(`/${userPath}/read`) }"
             class="nav-btn"
           >
@@ -52,12 +51,11 @@
             <span class="ml-2 font-medium">觀賞空間</span>
           </button>
 
-          <div class="w-px h-8 bg-slate-500 mx-2"></div>
+          <div class="divider"></div>
 
           <!-- 登出按鈕 -->
           <button
             @click="logout"
-            @mousedown="debugClick('登出')"
             class="nav-btn nav-btn-logout"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,113 +78,153 @@ const props = defineProps({
   },
   userPath: {
     type: String,
-    required: true
+    required: true,
+    validator: (value) => ['jing', 'qian'].includes(value)
   }
 })
 
+// === 計算屬性 ===
+const userInitial = computed(() => props.userName?.charAt(0) || '');
+const userTypeClass = computed(() => `app-header-${props.userPath}`);
+
 // === REACTIVE 數據 ===
-const route = useRoute()
-const currentRoute = computed(() => route.path)
+const route = useRoute();
+const router = useRouter();
+const currentRoute = computed(() => route.path);
 
 // === 導航處理函數 ===
-const navigateToHome = async () => {
-  console.log('=== 導航到首頁 ===')
-  console.log('當前路由:', route.path)
-  console.log('用戶路徑:', props.userPath)
-  const targetPath = `/${props.userPath}`
-  console.log('目標路徑:', targetPath)
-  
-  try {
-    await navigateTo(targetPath)
-    console.log('導航成功!')
-  } catch (error) {
-    console.error('導航失敗:', error)
-  }
+const navigateToHome = () => {
+  const targetPath = `/${props.userPath}`;
+  router.push(targetPath);
 }
 
-const navigateToWrite = async () => {
-  console.log('=== 導航到寫作空間 ===')
-  console.log('當前路由:', route.path)
-  console.log('用戶路徑:', props.userPath)
-  const targetPath = `/${props.userPath}/write`
-  console.log('目標路徑:', targetPath)
-  
-  try {
-    await navigateTo(targetPath)
-    console.log('導航成功!')
-  } catch (error) {
-    console.error('導航失敗:', error)
-  }
+const navigateToWrite = () => {
+  const targetPath = `/${props.userPath}/write`;
+  router.push(targetPath);
 }
 
-const navigateToRead = async () => {
-  console.log('=== 導航到觀賞空間 ===')
-  console.log('當前路由:', route.path)
-  console.log('用戶路徑:', props.userPath)
-  const targetPath = `/${props.userPath}/read`
-  console.log('目標路徑:', targetPath)
-  
-  try {
-    await navigateTo(targetPath)
-    console.log('導航成功!')
-  } catch (error) {
-    console.error('導航失敗:', error)
-  }
+const navigateToRead = () => {
+  const targetPath = `/${props.userPath}/read`;
+  router.push(targetPath);
 }
 
 // === 登出處理函數 ===
 const logout = () => {
-  console.log('=== 執行登出 ===')
-  
   // 清除驗證狀態
   if (process.client) {
-    sessionStorage.removeItem('writeapp_authenticated')
-    console.log('Session 已清除')
+    sessionStorage.removeItem('writeapp_authenticated');
   }
   
   // 導航到首頁
-  navigateTo('/')
-  console.log('已導航到登入頁面')
+  router.push('/');
 }
 
 // === 路徑檢查函數 ===
 const isCurrentRoute = (routePath) => {
-  return currentRoute.value === routePath
-}
-
-// === 調試函數 ===
-const debugClick = (buttonName) => {
-  console.log(`=== ${buttonName} 按鈕被點擊 ===`)
-  console.log('Props:', props)
-  console.log('當前路由:', currentRoute.value)
+  return currentRoute.value === routePath;
 }
 </script>
 
 <style scoped>
+/* === 頭部主要樣式 === */
+.app-header {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 0.5rem 0;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-normal);
+  background-color: rgba(6, 78, 59, 0.75);
+  pointer-events: auto !important;
+}
+
+/* 特定用戶類型樣式 */
+.app-header-jing {
+  background-color: rgba(var(--color-jing-secondary), 0.75);
+  border-bottom: 1px solid rgba(var(--color-jing-accent), 0.1);
+}
+
+.app-header-qian {
+  background-color: rgba(var(--color-qian-secondary), 0.75);
+  border-bottom: 1px solid rgba(var(--color-qian-accent), 0.1);
+}
+
+/* 用戶頭像 */
+.user-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.app-header-jing .user-avatar {
+  background: linear-gradient(135deg, rgb(var(--color-jing-primary)), rgb(var(--color-jing-secondary)));
+}
+
+.app-header-qian .user-avatar {
+  background: linear-gradient(135deg, rgb(var(--color-qian-primary)), rgb(var(--color-qian-secondary)));
+}
+
+.avatar-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+/* 導航按鈕容器 */
+.nav-buttons-container {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--border-radius-xl);
+  padding: 0.5rem;
+  gap: 0.25rem;
+}
+
+/* 分隔線 */
+.divider {
+  width: 1px;
+  height: 2rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 0.5rem;
+}
+
+/* 按鈕樣式 */
 .nav-btn {
   display: flex;
   align-items: center;
   padding: 0.75rem 1.25rem;
-  border-radius: 1rem;
+  border-radius: var(--border-radius-lg);
   font-size: 0.875rem;
-  font-weight: 500;
-  color: white !important;
-  background: rgba(47, 79, 79, 0.9);
-  backdrop-filter: blur(8px);
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
+  transition: var(--transition-normal);
+  cursor: pointer !important;
   position: relative;
   overflow: hidden;
-  cursor: pointer !important;
   z-index: 20;
   pointer-events: auto !important;
   user-select: none;
 }
 
-.nav-btn * {
-  pointer-events: none;
-  color: inherit;
+.app-header-jing .nav-btn {
+  background: rgba(var(--color-jing-primary), 0.4);
+  box-shadow: 0 0 5px rgba(var(--color-jing-accent), 0.4);
+}
+
+.app-header-qian .nav-btn {
+  background: rgba(var(--color-qian-primary), 0.4);
+  box-shadow: 0 0 5px rgba(var(--color-qian-accent), 0.4);
 }
 
 .nav-btn::before {
@@ -207,24 +245,29 @@ const debugClick = (buttonName) => {
 }
 
 .nav-btn:hover {
-  color: white !important;
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(148, 163, 184, 0.25);
+  box-shadow: var(--shadow-lg);
 }
 
-.nav-btn-active {
-  background: rgba(47, 79, 79, 0.6);
-  color: white !important;
-  box-shadow: 0 4px 15px rgba(148, 163, 184, 0.3);
+/* 按鈕激活狀態 */
+.app-header-jing .nav-btn-active {
+  background: rgba(var(--color-jing-primary), 0.4);
+  box-shadow: 0 0 15px rgba(var(--color-jing-accent), 0.4);
 }
 
+.app-header-qian .nav-btn-active {
+  background: rgba(var(--color-qian-primary), 0.4);
+  box-shadow: 0 0 15px rgba(var(--color-qian-accent), 0.4);
+}
+
+/* 登出按鈕 */
 .nav-btn-logout {
-  color: rgb(248 113 113) !important;
+  color: rgb(248 113 113);
 }
 
 .nav-btn-logout:hover {
-  color: white !important;
+  color: white;
   background: rgba(239, 68, 68, 0.35);
   box-shadow: 0 8px 25px rgba(239, 68, 68, 0.25);
 }
@@ -240,20 +283,14 @@ const debugClick = (buttonName) => {
     min-width: 3rem;
     justify-content: center;
   }
-}
-
-/* 漸變背景動畫 */
-.bg-gradient-to-r {
-  background-size: 200% 100%;
-  animation: gradientShift 6s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%, 100% {
-    background-position: 0% 50%;
+  
+  .user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
   }
-  50% {
-    background-position: 100% 50%;
+  
+  .avatar-text {
+    font-size: 1.25rem;
   }
 }
 </style>
